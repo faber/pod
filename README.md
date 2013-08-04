@@ -1,11 +1,11 @@
-# Pod: Ruby Service Container #
+# Pod - A Ruby Service Container #
 
-Pod provides a small, simple service container class that encourages clean, testable application design without getting in the way or overly complex.
+Pod provides a small, simple service container class that encourages clean, testable application design without getting in the way or being overly complex.
 
 
 ## Getting Started ##
 
-There is no limit whatsoever on what a "service" is -- Pod makes no assumptions about this.  The pod just makes it extremely simple to setup and access your dependent services on demand without worrying about configuration.
+There is no limit whatsoever on what a "service" is -- Pod makes no assumptions about this.  The pod just simplifies the tasks of setting up and accessing your dependencies on demand without worrying about configuration.
 
 Here are some examples of how you use pods
 
@@ -43,7 +43,11 @@ Here are some examples of how you use pods
 
 ## Extensions ##
 
-Extensions allow you and other developers to create re-usable pods.  The `Pod.extension` method allows you to build an extension, using all the regular methods of a pod.  This is because pod extensions are actually just pod instances themselves. The only difference is that an extension is locked after it is created so it can no longer be modified.
+Extensions permit you and other developers to create re-usable pods.  To do this, you define a set of services with a default configuration.  Then, when you are creating pods, you can mixin the extension to import all of the extension's services and its default configuration.
+
+Extensions are actually just pod instances themselves, so the extension definition block is exaclty the same as the pod creation block.  The only difference is that after an extension is created it can not be changed.
+
+Here's an example:
 
     # Convenient way to define extensions.
     extension = Pod.extension do
