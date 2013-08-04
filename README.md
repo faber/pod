@@ -80,6 +80,7 @@ Here's an example:
 
 # TODO #
 
+* Examples of using pods in applications
 * Namespaced services
 * Richer conf object
 * Set default conf values
