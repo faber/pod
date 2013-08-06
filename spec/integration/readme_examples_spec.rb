@@ -11,7 +11,7 @@ describe 'README code examples' do
       end
       # Create a Pod with a definition block
       pod = Pod.new do
-        conf[:db] = { host: 'localhost', port: 3306 }
+        env.conf[:db] = { host: 'localhost', port: 3306 }
 
         def_service(:hello, 'world')
 
@@ -26,7 +26,7 @@ describe 'README code examples' do
       end
 
       # And you can modify it's configuration
-      pod.conf[:cat_name] = 'Frank'
+      pod.env.conf[:cat_name] = 'Frank'
 
       # Basic service accessor, returns the service object
       expect(pod.get_service(:hello)).to eq('world')   # => 'world'
@@ -48,12 +48,8 @@ describe 'README code examples' do
       # Convenient way to define extensions.
       extension = Pod.extension do
       
-        conf[:dog] = {
-          firstname: 'Duchess',
-          lastname: 'Faber'
-        }
-      
         def_service(:dog) do |conf|
+          conf.require!({dog: [:firstname, :lastname]})
           "#{conf[:dog][:firstname]} #{conf[:dog][:lastname]}"
         end
       end
@@ -63,16 +59,41 @@ describe 'README code examples' do
       # Mix the extension into a pod
       pod = Pod.new
       pod.mixin(extension)
+      
     
-      # The pod now has the extension services defined,
-      # as well as the extension's default configuration, which you can
-      # then override.
+      # The pod now has the extension services defined
+      expect{pod.dog}.to raise_error(Pod::Error)
+      pod.env.conf[:dog] = {
+        firstname: 'Duchess',
+        lastname: 'Faber'
+      }
       expect(pod.dog).to eq("Duchess Faber")                    # => "Duchess Faber"
-      pod.conf[:dog][:firstname] = "Stella"
-      pod.conf[:dog][:lastname] = "Blue"
+      pod.env.conf[:dog][:firstname] = "Stella"
+      pod.env.conf[:dog][:lastname] = "Blue"
       expect(pod.dog).to eq("Duchess Faber")                    # => "Duchess Faber"
       expect(pod.realize_service(:dog)).to eq("Stella Blue")  # => "Stella Blue"
       expect(pod.dog).to eq("Stella Blue")                    # => "Stella Blue"
+      
+    end
+  end
+
+
+  describe 'Environment example' do
+    it 'should work' do
+      Rock = Class.new(Hash) do
+        def self.all(ids)
+          ids.map{|id| {id: id} }
+        end
+      end
+      env = Pod::Env.new('dev')
+
+      env.conf[:rock_ids] = [1,2,3]
+
+      env.pod.def_service(:rocks) { |conf| Rock.all(conf[:rock_ids]) }
+
+      expect(env.pod.rocks.size).to be(3)   # => Array of Rock objects
+      expect(Set.new(env.pod.rocks.map{|r|r[:id]})).to eq(Set.new([1,2,3]))
+      
     end
   end
 end

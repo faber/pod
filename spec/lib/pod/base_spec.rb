@@ -1,12 +1,15 @@
 require 'spec_helper'
 require 'pod/base'
+require 'pod/env'
 
 describe Pod::Base do
-  subject { described_class.new }
+  subject { described_class.new(env) }
+  
+  let(:env) { Pod::Env.new('test') }
   let(:a_service) { Object.new }
   
   let(:pod_with_services) do
-    described_class.new.tap do |pod|
+    described_class.new(env).tap do |pod|
       pod.conf[:key] = '1234'
       
       pod.def_service(:log, 'hello')
@@ -16,8 +19,9 @@ describe Pod::Base do
   end
 
   let(:log_extension) do
-    described_class.new.tap do |pod|
+    described_class.new(env).tap do |pod|
       pod.def_service(:log) { "hello" }
+      pod.def_service(:level) {|conf| conf[:level] }
     end
   end
     
@@ -27,7 +31,7 @@ describe Pod::Base do
   
   describe 'initializing with a block' do
     it 'should execute the block in the context of the new object' do
-      container = described_class.new do
+      container = described_class.new(env) do
         def_service :my_service, 'hello'
         def_service :blocky do
           'block service!'
@@ -38,11 +42,25 @@ describe Pod::Base do
     end
   end
   
+  describe 'initializing with an argument' do
+    context 'when the argument is a Pod::Env' do
+      it 'should set the env attribute' do
+        env = double
+        described_class.new(env).env.should be(env)
+      end
+    end
+  end
+  
   describe '#conf' do
-    it 'should be an initially empty hash' do
+    it 'should be an initially empty, readonly hash' do
       subject.conf.should be_empty
       subject.conf[:db_user] = 'root'
-      subject.conf[:db_user].should eq('root')
+      subject.conf[:db_user].should be_nil
+    end
+    
+    it 'should delegate to the pod\'s env' do
+      env = double(:conf => {testing: 123})
+      described_class.new(env).conf[:testing].should be(123)
     end
   end
   
@@ -97,7 +115,7 @@ describe Pod::Base do
     it 'should replace the currently memoized service object' do
       subject.def_service(:service) {|conf_hash| conf_hash[:a] }
       subject.get_service(:service).should == nil
-      subject.conf[:a] = 'b'
+      subject.env.conf[:a] = 'b'
       subject.get_service(:service).should == nil
       subject.realize_service(:service).should == 'b'
       subject.get_service(:service).should == 'b'
@@ -111,11 +129,9 @@ describe Pod::Base do
     end
     
     it 'should evaluate extension services in the context of this pod' do
-      subject.tap do |pod|
-        pod.conf[:key] = '1234'
-        pod.def_service(:key) { |conf| conf[:key] }
-      end
-      subject.key.should eq('1234')
+      env = double(conf: {level: 'HIGH'})
+      pod = described_class.new(env).mixin(log_extension)
+      pod.level.should eq('HIGH')
     end
   end
 

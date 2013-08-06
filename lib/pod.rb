@@ -1,13 +1,15 @@
 require 'pod/base'
+require 'pod/env'
 
 module Pod
   
-  def self.new(*args, &block)
-    Pod::Base.new(*args, &block)
+  def self.new(env=nil, &block)
+    env ||= Pod::Env.new
+    Pod::Base.new(env, &block)
   end
   
-  def self.extension(*args, &block)
-    new(*args, &block).lock!
+  def self.extension(&block)
+    new(Pod::Env.new, &block).lock!
   end
 
   # attr_reader :conf

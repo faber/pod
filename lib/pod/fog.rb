@@ -5,26 +5,28 @@ module Pod
 
   Fog = Pod.extension do
     
-    conf[:fog] = { mock: true }
-    conf[:aws] = {
-      access: 'aws access key',
-      secret: 'aws secret key'
-    }
+    # conf[:fog] = { mock: true }
+    # conf[:aws] = {
+    #   access: 'aws access key',
+    #   secret: 'aws secret key'
+    # }
     
     
     def_service :fog do |conf|
-      ::Fog.mock! if conf[:fog][:mock]
+      ::Fog.mock! if conf.get(:fog, :mock)
       ::Fog
     end
     
     def_service :rds do |conf|
+      conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::RDS.new({
-        aws_access_key_id: 'conf[:aws][:access]',
-        aws_secret_access_key: 'conf[:aws][:secret]'
+        aws_access_key_id: conf[:aws][:access],
+        aws_secret_access_key: conf[:aws][:secret]
       })
     end
     
     def_service :compute do |conf|
+      conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::Compute::AWS.new({
         aws_access_key_id: conf[:aws][:access],
         aws_secret_access_key: conf[:aws][:secret]

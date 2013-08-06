@@ -1,11 +1,10 @@
 module Pod
   class Base
 
-    attr_reader :conf
-
-    def initialize(&block)
+    def initialize(env, &block)
+      @env = env
       @services = {}
-      @conf = {}
+      # @conf = {}
       @locked = false
       @realized = {}
       instance_eval(&block) if block_given?
@@ -20,10 +19,14 @@ module Pod
       @locked
     end
     
+    def env
+      @env
+    end
+    
     def conf
-      locked? ?
-        @conf.dup :
-        @conf
+      env.nil? ?
+        {} :
+        env.conf.dup
     end
 
     def empty?
@@ -60,8 +63,9 @@ module Pod
     def mixin(pod)
       unless_locked! do 
         create_service_definitions_from_pod(pod)
-        merge_default_configuration(pod)
+        # merge_default_configuration(pod)
       end
+      self
     end
     
     
@@ -92,7 +96,9 @@ module Pod
     end
     
     def merge_default_configuration(pod)
-      @conf = deep_merge_two_hashes pod.conf, @conf
+      puts "Pod conf: #{pod.conf.inspect}"
+      puts "My conf: #{self.conf.inspect}"
+      self.env.conf = deep_merge_two_hashes pod.conf, self.conf
     end
     
     def deep_merge_two_hashes(hash1, hash2)

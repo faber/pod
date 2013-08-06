@@ -5,10 +5,10 @@ module Pod
   
   ConsoleLogger = Pod.extension do
 
-    conf[:console] ||= { log_level: Logger::DEBUG }
-
     def_service(:console) do |conf|
-
+      
+      conf.require! console: [:log_level]
+      
       Logger.new(STDOUT).tap do |logger|
         logger.level = conf[:console][:log_level]
       end

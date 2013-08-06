@@ -6,22 +6,24 @@ describe 'Pod::ConsoleLogger' do
   subject { Pod::ConsoleLogger }
 
   let(:pod) { Pod.new }
-
-  let(:valid_configuration) do 
-    {  }
-  end
-
+  
+  let(:valid_conf) { {console: {log_level: Logger::DEBUG}} }
 
   it { should be_kind_of(Pod::Base) }
-  describe 'default log level' do
-    it 'should be debug' do
-      subject.conf[:console][:log_level].should == Logger::DEBUG
+
+  describe 'required conf' do
+    it 'should raise an exception when missing' do
+      pod.mixin(subject)
+      expect { pod.console }.to raise_error(Pod::Error)
+      pod.env.conf.replace(valid_conf)
+      expect { pod.console }.not_to raise_error
     end
   end
 
   describe 'with proper configuration' do
     before(:each) do
       pod.mixin subject
+      pod.env.conf.replace(valid_conf)
     end
     
     it 'should provide a service "console" which is like a Logger' do
