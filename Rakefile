@@ -11,6 +11,7 @@ task :console do
   ARGV.clear
   require 'irb'
   $: << File.join(File.dirname(__FILE__), 'lib')
+  require 'pod'
   IRB.start
 end
 
