@@ -33,5 +33,13 @@ module Pod
       })
     end
     
+    def_service :fog_storage do |conf|
+      conf.require!({aws: [:access, :secret]})
+      get_service(:fog, conf)::Storage::AWS.new({
+        aws_access_key_id: conf[:aws][:access],
+        aws_secret_access_key: conf[:aws][:secret]
+      })
+    end
+    
   end
 end
