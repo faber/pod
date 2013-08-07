@@ -9,19 +9,8 @@ module Pod
         missing += validate_requirement(arg, self)
       end
       
-      
-      
-      # args.each do |arg|
-      #   if arg.kind_of?(Hash)
-      #     arg.each do |key, value|
-      #       
-      #     end
-      #   elsif !has_key?(arg)
-      #     missing << arg
-      #   end
-      # end
       if !missing.empty?
-        raise Pod::Error, "required key(s) #{missing.join(', ')} not found in conf #{self.inspect}"
+        raise Pod::Error, "required key(s) #{missing.map(&:inspect).join(', ')} not found in conf #{self.inspect}"
       end
     end
 
@@ -76,8 +65,5 @@ module Pod
         [scalar]
     end
     
-    class NilConfProxy
-      
-    end
   end
 end

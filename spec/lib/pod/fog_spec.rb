@@ -26,10 +26,10 @@ describe 'Pod::Fog' do
       proc { pod.fog }.should_not raise_error
     end    
     it 'should provide a service "rds" which like a Fog::AWS::RDS' do
-      proc { pod.rds }.should_not raise_error
+      proc { pod.fog_rds }.should_not raise_error
     end
     it 'should provide a service "compute" which like a Fog::Compute instance' do
-      proc { pod.rds }.should_not raise_error
+      proc { pod.fog_compute }.should_not raise_error
     end
   end
     

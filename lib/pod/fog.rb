@@ -17,7 +17,7 @@ module Pod
       ::Fog
     end
     
-    def_service :rds do |conf|
+    def_service :fog_rds do |conf|
       conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::RDS.new({
         aws_access_key_id: conf[:aws][:access],
@@ -25,7 +25,7 @@ module Pod
       })
     end
     
-    def_service :compute do |conf|
+    def_service :fog_compute do |conf|
       conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::Compute::AWS.new({
         aws_access_key_id: conf[:aws][:access],
