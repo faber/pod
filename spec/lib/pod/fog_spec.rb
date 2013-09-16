@@ -34,6 +34,11 @@ describe 'Pod::Fog' do
     it 'should provide a service "fog_aws_elb" which is like a Fog::AWS::ELB' do
       proc { pod.fog_aws_elb }.should_not raise_error
     end
+    it 'should provide a service "fog_aws_auto_scaling" which is like a Fog::AWS::AutoScaling' do
+      proc { pod.fog_aws_auto_scaling }.should_not raise_error
+    end
+
+
   end
     
 end

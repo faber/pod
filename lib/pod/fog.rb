@@ -48,5 +48,14 @@ module Pod
         aws_secret_access_key: conf[:aws][:secret]
       })
     end
+
+    def_service :fog_aws_auto_scaling do |conf|
+      conf.require!({aws: [:access, :secret]})
+      get_service(:fog, conf)::AWS::AutoScaling.new({
+        aws_access_key_id: conf[:aws][:access],
+        aws_secret_access_key: conf[:aws][:secret]
+      })
+    end
+
   end
 end
