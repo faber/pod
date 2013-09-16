@@ -25,11 +25,14 @@ describe 'Pod::Fog' do
     it 'should provide a service "fog" which returns the Fog base module' do
       proc { pod.fog }.should_not raise_error
     end    
-    it 'should provide a service "rds" which like a Fog::AWS::RDS' do
+    it 'should provide a service "fog_rds" which like a Fog::AWS::RDS' do
       proc { pod.fog_rds }.should_not raise_error
     end
-    it 'should provide a service "compute" which like a Fog::Compute instance' do
+    it 'should provide a service "fog_compute" which like a Fog::Compute instance' do
       proc { pod.fog_compute }.should_not raise_error
+    end
+    it 'should provide a service "fog_aws_elb" which is like a Fog::AWS::ELB' do
+      proc { pod.fog_aws_elb }.should_not raise_error
     end
   end
     
