@@ -37,6 +37,9 @@ describe 'Pod::Fog' do
     it 'should provide a service "fog_aws_auto_scaling" which is like a Fog::AWS::AutoScaling' do
       proc { pod.fog_aws_auto_scaling }.should_not raise_error
     end
+    it 'should provide a service "fog_aws_cloud_watch" which is like a Fog::AWS::CloudWatch' do
+      proc { pod.fog_aws_cloud_watch }.should_not raise_error
+    end
 
 
   end
