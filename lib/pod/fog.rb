@@ -21,7 +21,8 @@ module Pod
       conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::RDS.new({
         aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret]
+        aws_secret_access_key: conf[:aws][:secret],
+        region: conf[:aws][:region]
       })
     end
     
@@ -29,7 +30,8 @@ module Pod
       conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::Compute::AWS.new({
         aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret]
+        aws_secret_access_key: conf[:aws][:secret],
+        region: conf[:aws][:region]
       })
     end
     
@@ -37,7 +39,8 @@ module Pod
       conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::Storage::AWS.new({
         aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret]
+        aws_secret_access_key: conf[:aws][:secret],
+        region: conf[:aws][:region]
       })
     end
     
@@ -45,7 +48,8 @@ module Pod
       conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::ELB.new({
         aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret]
+        aws_secret_access_key: conf[:aws][:secret],
+        region: conf[:aws][:region]
       })
     end
 
@@ -53,7 +57,8 @@ module Pod
       conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::AutoScaling.new({
         aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret]
+        aws_secret_access_key: conf[:aws][:secret],
+        region: conf[:aws][:region]
       })
     end
 
@@ -61,7 +66,8 @@ module Pod
       conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::CloudWatch.new({
         aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret]
+        aws_secret_access_key: conf[:aws][:secret],
+        region: conf[:aws][:region]
       })
     end
 
