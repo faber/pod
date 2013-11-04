@@ -4,7 +4,7 @@ require 'pod/env'
 module Pod
   
   def self.new(env=nil, &block)
-    env ||= Pod::Env.new
+    env ||= '_default'
     Pod::Base.new(env, &block)
   end
   

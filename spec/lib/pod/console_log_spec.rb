@@ -15,7 +15,7 @@ describe 'Pod::ConsoleLogger' do
     it 'should raise an exception when missing' do
       pod.mixin(subject)
       expect { pod.console }.to raise_error(Pod::Error)
-      pod.env.conf.replace(valid_conf)
+      pod.conf.replace(valid_conf)
       expect { pod.console }.not_to raise_error
     end
   end
@@ -23,7 +23,7 @@ describe 'Pod::ConsoleLogger' do
   describe 'with proper configuration' do
     before(:each) do
       pod.mixin subject
-      pod.env.conf.replace(valid_conf)
+      pod.conf.replace(valid_conf)
     end
     
     it 'should provide a service "console" which is like a Logger' do

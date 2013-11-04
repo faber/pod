@@ -19,7 +19,7 @@ describe 'Pod::Fog' do
     
     before(:each) do
       pod.mixin subject
-      pod.env.conf.replace valid_conf
+      pod.conf.replace valid_conf
     end
 
     it 'should provide a service "fog" which returns the Fog base module' do

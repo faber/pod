@@ -1,10 +1,10 @@
 module Pod
   class Base
 
-    def initialize(env, &block)
-      @env = env
+    def initialize(env=nil, &block)
+      @env = env || '_default'
+      @conf = Pod::Conf.new
       @services = {}
-      # @conf = {}
       @locked = false
       @realized = {}
       instance_eval(&block) if block_given?
@@ -24,9 +24,7 @@ module Pod
     end
     
     def conf
-      env.nil? ?
-        {} :
-        env.conf.dup
+      locked? ? @conf.dup : @conf
     end
 
     def empty?
@@ -44,9 +42,10 @@ module Pod
       @realized[name]
     end
     
-    def realize_service(name, conf=nil)
+    def realize_service(name, pod=nil)
       if @services[name].kind_of?(Proc)
-        realized = @services[name].call(conf || self.conf)
+        # realized = @services[name].call(conf || self.conf)
+        realized = @services[name].call(pod || self)
       else
         realized = @services[name]
       end
@@ -71,6 +70,10 @@ module Pod
     
     private
     
+    def conf=(conf)
+      @conf = conf
+    end
+    
     def unless_locked!
       locked? ?
         raise("Can not modify a locked Pod") :
@@ -84,21 +87,19 @@ module Pod
         @services[name] = value
       end
 
-      define_singleton_method(name) { get_service(name, conf) }
+      define_singleton_method(name) { get_service(name, self) }
     end
 
-    def create_service_definitions_from_pod(pod)
-      pod.services.each do |service_name|
-        def_service(service_name) do |conf|
-          pod.realize_service(service_name, self.conf)
+    def create_service_definitions_from_pod(extension_pod)
+      extension_pod.services.each do |service_name|
+        def_service(service_name) do |pod|
+          extension_pod.realize_service(service_name, pod)
         end
       end
     end
     
     def merge_default_configuration(pod)
-      puts "Pod conf: #{pod.conf.inspect}"
-      puts "My conf: #{self.conf.inspect}"
-      self.env.conf = deep_merge_two_hashes pod.conf, self.conf
+      self.conf = deep_merge_two_hashes pod.conf, self.conf
     end
     
     def deep_merge_two_hashes(hash1, hash2)

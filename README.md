@@ -11,22 +11,22 @@ Here are some examples of how you use pods
 
     # Create a pod with a definition block
     pod = Pod.new do
-      env.conf[:db] = { host: 'localhost', port: 3306 }
+      conf[:db] = { host: 'localhost', port: 3306 }
     
       def_service(:hello, 'world')
       
-      def_service(:db) do |conf|
-        DB.new(conf[:db][:host], conf[:db][:port])
+      def_service(:db) do |pod|
+        DB.new(pod.conf[:db][:host], pod.conf[:db][:port])
       end
     end
 
     # You can also add more services to an existing pod
-    pod.def_service(:cat) do |conf|
-      "Cat named #{conf[:cat_name]}"
+    pod.def_service(:cat) do |pod|
+      "Cat named #{pod.conf[:cat_name]}"
     end
     
     # And you can modify it's configuration
-    pod.env.conf[:cat_name] = 'Frank'
+    pod.conf[:cat_name] = 'Frank'
 
     # Basic service accessor, returns the service object
     pod.get_service(:hello)   # => 'world'
@@ -52,9 +52,9 @@ Here's an example:
     # Convenient way to define extensions.
     extension = Pod.extension do
       
-      def_service(:dog) do |conf|
-        conf.require!({dog: [:firstname, :lastname]})
-        "#{conf[:dog][:firstname]} #{conf[:dog][:lastname]}"
+      def_service(:dog) do |pod|
+        pod.conf.require!({dog: [:firstname, :lastname]})
+        "#{pod.conf[:dog][:firstname]} #{pod.conf[:dog][:lastname]}"
       end
     end
     
@@ -66,11 +66,11 @@ Here's an example:
     
     # The pod now has the extension services defined
     pod.dog                    # => raise Pod::Error with message about missing config
-    pod.env.conf[:dog][:firstname] = 'Duchess'
-    pod.env.conf[:dog][:lastname] = 'Faber'
+    pod.conf[:dog][:firstname] = 'Duchess'
+    pod.conf[:dog][:lastname] = 'Faber'
     pod.dog                    # => "Duchess Faber"
-    pod.env.conf[:dog][:firstname] = "Stella"
-    pod.env.conf[:dog][:lastname] = "Blue"
+    pod.conf[:dog][:firstname] = "Stella"
+    pod.conf[:dog][:lastname] = "Blue"
     pod.dog                    # => "Duchess Faber"
     pod.realize_service(:dog)  # => "Stella Blue"
     pod.dog                    # => "Stella Blue"
@@ -78,17 +78,14 @@ Here's an example:
 
 ## Environments ##
 
-Above you'll notice that in order to modify the conf, we had to grab it through the pod's env.
-In an app, you will actually start with an env, and then use it's pod to define services.
+The environment is simply a string representing the name of the environment.
 
-    env = Pod::Env.new('dev')
-    
-    env.conf[:rock_ids] = [1,2,3]
-    
-    env.pod.def_service(:rocks) { |conf| Rock.all(conf[:rock_ids]) }
-    
-    env.pod.rocks     # => Array of Rock objects
+    p = Pod.new
+    p.env # => '_default'
 
+    p = Pod.new('testing')
+    p.env # => 'testing'
+    
 
 
 # TODO #

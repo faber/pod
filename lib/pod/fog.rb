@@ -5,69 +5,69 @@ module Pod
 
   Fog = Pod.extension do
     
-    # conf[:fog] = { mock: true }
-    # conf[:aws] = {
+    # pod.conf[:fog] = { mock: true }
+    # pod.conf[:aws] = {
     #   access: 'aws access key',
     #   secret: 'aws secret key'
     # }
     
     
-    def_service :fog do |conf|
-      ::Fog.mock! if conf.get(:fog, :mock)
+    def_service :fog do |pod|
+      ::Fog.mock! if pod.conf.get(:fog, :mock)
       ::Fog
     end
     
-    def_service :fog_rds do |conf|
-      conf.require!({aws: [:access, :secret]})
-      get_service(:fog, conf)::AWS::RDS.new({
-        aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret],
-        region: conf[:aws][:region]
+    def_service :fog_rds do |pod|
+      pod.conf.require!({aws: [:access, :secret]})
+      get_service(:fog, pod)::AWS::RDS.new({
+        aws_access_key_id: pod.conf[:aws][:access],
+        aws_secret_access_key: pod.conf[:aws][:secret],
+        region: pod.conf[:aws][:region]
       })
     end
     
-    def_service :fog_compute do |conf|
-      conf.require!({aws: [:access, :secret]})
+    def_service :fog_compute do |pod|
+      pod.conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::Compute::AWS.new({
-        aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret],
-        region: conf[:aws][:region]
+        aws_access_key_id: pod.conf[:aws][:access],
+        aws_secret_access_key: pod.conf[:aws][:secret],
+        region: pod.conf[:aws][:region]
       })
     end
     
-    def_service :fog_storage do |conf|
-      conf.require!({aws: [:access, :secret]})
+    def_service :fog_storage do |pod|
+      pod.conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::Storage::AWS.new({
-        aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret],
-        region: conf[:aws][:region]
+        aws_access_key_id: pod.conf[:aws][:access],
+        aws_secret_access_key: pod.conf[:aws][:secret],
+        region: pod.conf[:aws][:region]
       })
     end
     
-    def_service :fog_aws_elb do |conf|
-      conf.require!({aws: [:access, :secret]})
+    def_service :fog_aws_elb do |pod|
+      pod.conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::ELB.new({
-        aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret],
-        region: conf[:aws][:region]
+        aws_access_key_id: pod.conf[:aws][:access],
+        aws_secret_access_key: pod.conf[:aws][:secret],
+        region: pod.conf[:aws][:region]
       })
     end
 
-    def_service :fog_aws_auto_scaling do |conf|
-      conf.require!({aws: [:access, :secret]})
+    def_service :fog_aws_auto_scaling do |pod|
+      pod.conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::AutoScaling.new({
-        aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret],
-        region: conf[:aws][:region]
+        aws_access_key_id: pod.conf[:aws][:access],
+        aws_secret_access_key: pod.conf[:aws][:secret],
+        region: pod.conf[:aws][:region]
       })
     end
 
-    def_service :fog_aws_cloud_watch do |conf|
-      conf.require!({aws: [:access, :secret]})
+    def_service :fog_aws_cloud_watch do |pod|
+      pod.conf.require!({aws: [:access, :secret]})
       get_service(:fog, conf)::AWS::CloudWatch.new({
-        aws_access_key_id: conf[:aws][:access],
-        aws_secret_access_key: conf[:aws][:secret],
-        region: conf[:aws][:region]
+        aws_access_key_id: pod.conf[:aws][:access],
+        aws_secret_access_key: pod.conf[:aws][:secret],
+        region: pod.conf[:aws][:region]
       })
     end
 
