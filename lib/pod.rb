@@ -9,7 +9,7 @@ module Pod
   end
   
   def self.extension(&block)
-    new(Pod::Env.new, &block).lock!
+    new(&block).lock!
   end
 
   # attr_reader :conf
