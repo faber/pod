@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'pod/base'
-require 'pod/env'
 
 describe Pod::Base do
   subject { described_class.new }

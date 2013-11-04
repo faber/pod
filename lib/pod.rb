@@ -1,5 +1,4 @@
 require 'pod/base'
-require 'pod/env'
 
 module Pod
   
