@@ -1,3 +1,5 @@
+require 'pod/conf'
+
 module Pod
   class Base
 
